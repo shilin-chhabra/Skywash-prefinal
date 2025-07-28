@@ -135,7 +135,7 @@ The image is built with a demo WAQI token
 4. Test with real API data
 5. Submit a pull request
 
-## icense
+## License
 
 This project is for educational and non-commercial use. Real-time data provided by WAQI must include proper attribution as per their terms of service.
 

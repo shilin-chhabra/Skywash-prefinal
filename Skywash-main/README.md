@@ -4,12 +4,12 @@ A modern web application for tracking PM₂.₅ pollution levels and simulating 
 
 ## Features
 
-- ** Real-Time Data**: Live PM₂.₅ readings from 10+ major cities worldwide
-- ** Interactive Visualization**: Dynamic charts and maps with color-coded pollution levels
-- ** Washout Simulation**: Simulate how rainfall affects air pollution levels
-- ** Modern UI**: NASA-inspired dashboard with responsive Bootstrap design
-- ** Smart Caching**: Efficient API usage with 1-hour data caching
-- ** Mobile Friendly**: Fully responsive design for all devices
+- Real-Time Data: Live PM₂.₅ readings from 64 major cities worldwide
+- Interactive Visualization: Dynamic charts and maps with color-coded pollution levels
+- Washout Simulation: Simulate how rainfall affects air pollution levels
+- Modern UI: NCAR and NASA-inspired dashboard with responsive Bootstrap design
+- Smart Caching: Efficient API usage with 1-hour data caching
+- Mobile Friendly: Fully responsive design for all devices
 
 ##  Quick Start
 

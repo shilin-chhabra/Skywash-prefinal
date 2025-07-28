@@ -5,7 +5,8 @@ on:
     branches: [main]
 
 env:
-  IMAGE: ${{ secrets.HARBOR_URL }}/${{ secrets.HARBOR_PROJECT }}/skywash:${{ github.sha }}
+  HARBOR_URL: ${{ secrets.HARBOR_URL }}
+  HARBOR_PROJECT: ${{ secrets.HARBOR_PROJECT }}
 
 jobs:
   build:
@@ -14,10 +15,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Prepare REGISTRY_HOST and IMAGE variables by stripping protocol from HARBOR_URL
+      - name: Set image variables
+        id: vars
+        run: |
+          REGISTRY_HOST=$(echo "$HARBOR_URL" | sed -e 's~https\?://~~')
+          echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
+          echo "IMAGE=$REGISTRY_HOST/$HARBOR_PROJECT/skywash:${{ github.sha }}" >> $GITHUB_ENV
+
       - name: Build
         run: docker build -t $IMAGE -f Skywash-prefinal/Dockerfile Skywash-prefinal
       - name: Login to Harbor
-        run: echo "${{ secrets.HARBOR_PASSWORD }}" | docker login ${{ secrets.HARBOR_URL }} \
+        run: echo "${{ secrets.HARBOR_PASSWORD }}" | docker login $REGISTRY_HOST \
              -u "${{ secrets.HARBOR_USERNAME }}" --password-stdin
 
       - name: Push

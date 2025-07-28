@@ -9,7 +9,7 @@ A modern web application for tracking PM₂.₅ pollution levels and simulating 
 - Washout Simulation: Simulate how rainfall affects air pollution levels
 - Modern UI: NCAR and NASA-inspired dashboard with responsive Bootstrap design
 - Smart Caching: Efficient API usage with 1-hour data caching
-- Mobile Friendly: Fully responsive design for all devices
+- Mobile Friendly: Fully responsive design for all devices using bootstrap tech
 
 ##  Quick Start
 

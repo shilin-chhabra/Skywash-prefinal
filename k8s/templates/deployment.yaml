@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app.name }}
+  template:
+    metadata:
+      labels: 
+        app: {{ .Values.app.name }}
+    spec:
+      containers:
+        - name: web
+          image: {{ .Values.app.container.image }}
+          ports: 
+            - containerPort: {{ .Values.app.container.port }}
+          env:
+            - name: WASHOUT_COEFF   # example secret made dynamic
+              value: "d637fde34e7053b3d3110c41de9b9ed82fa9e65e"
+          resources:
+            limits:
+              cpu: {{ .Values.app.cpu }}
+              memory: {{ .Values.app.memory }}

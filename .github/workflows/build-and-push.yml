@@ -1,6 +1,7 @@
 name: Build & Push SkyWash image
 
 on:
+  workflow_dispatch:
   push:
     branches: [main]
 
@@ -23,11 +24,15 @@ jobs:
           echo "REGISTRY_HOST=$REGISTRY_HOST" >> $GITHUB_ENV
           echo "IMAGE=$REGISTRY_HOST/$HARBOR_PROJECT/skywash:${{ github.sha }}" >> $GITHUB_ENV
 
+      - name: Login to Harbor
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.HARBOR_URL }}
+          username: ${{ secrets.HARBOR_USERNAME }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+
       - name: Build
         run: docker build -t $IMAGE -f Skywash-prefinal/Dockerfile Skywash-prefinal
-      - name: Login to Harbor
-        run: echo "${{ secrets.HARBOR_PASSWORD }}" | docker login $REGISTRY_HOST \
-             -u "${{ secrets.HARBOR_USERNAME }}" --password-stdin
 
       - name: Push
         run: docker push $IMAGE

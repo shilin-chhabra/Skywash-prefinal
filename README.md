@@ -129,7 +129,7 @@ The image is built with a demo WAQI token
 
 ## Contributing
 
-1. Fork the repository
+1. Fork the repo
 2. Create a feature branch
 3. Add your changes
 4. Test with real API data

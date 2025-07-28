@@ -2,16 +2,16 @@
 
 A modern web application for tracking PM₂.₅ pollution levels and simulating atmospheric washout effects using real-time data from the World Air Quality Index (WAQI) API.
 
-## ✨ Features
+## Features
 
-- **🌍 Real-Time Data**: Live PM₂.₅ readings from 10+ major cities worldwide
-- **📊 Interactive Visualization**: Dynamic charts and maps with color-coded pollution levels
-- **🌧️ Washout Simulation**: Simulate how rainfall affects air pollution levels
-- **🎨 Modern UI**: NASA-inspired dashboard with responsive Bootstrap design
-- **⚡ Smart Caching**: Efficient API usage with 1-hour data caching
-- **📱 Mobile Friendly**: Fully responsive design for all devices
+- Real-Time Data: Live PM₂.₅ readings from 64 major cities worldwide
+- Interactive Visualization: Dynamic charts and maps with color-coded pollution levels
+- Washout Simulation: Simulate how rainfall affects air pollution levels
+- Modern UI: NCAR and NASA-inspired dashboard with responsive Bootstrap design
+- Smart Caching: Efficient API usage with 1-hour data caching
+- Mobile Friendly: Fully responsive design for all devices using bootstrap tech
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -50,7 +50,7 @@ cp -r dist/* ../backend/static/
 ### 4. Access the Application
 Open your browser to `http://localhost:8000`
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 Create a `.env` file in the backend directory:
@@ -68,7 +68,7 @@ WASHOUT_COEFF=0.08
 - **Caching**: Data cached for 1 hour to minimize API calls
 - **Fallback**: Automatic fallback to static data if API fails
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Real-Time Data
 - `GET /api/cities` - Get all cities with real-time PM₂.₅ data
@@ -77,7 +77,7 @@ WASHOUT_COEFF=0.08
 ### Simulation
 - `GET /api/washout?pm25=92&rain_mm=10&duration_h=2` - Calculate washout effect
 
-## 🌟 Data Sources
+## Data Sources
 
 ### Real-Time Data
 - **Primary**: World Air Quality Index (WAQI) API
@@ -89,12 +89,12 @@ WASHOUT_COEFF=0.08
 - **Source**: Static baseline values for demonstration
 - **Purpose**: Ensures app functionality when API is unavailable
 
-## 🎨 UI Features
+## UI Features
 
 ### Data Status Indicator
-- 🟢 **LIVE DATA**: Shows count of cities with real-time data
-- 📊 **STATIC DATA**: Fallback mode indicator
-- 🔄 **Refresh Button**: Manual data refresh capability
+- **LIVE DATA**: Shows count of cities with real-time data
+- **STATIC DATA**: Fallback mode indicator
+- **Refresh Button**: Manual data refresh capability
 
 ### Interactive Elements
 - **Chart Tooltips**: Show data source, update time, and health categories
@@ -127,7 +127,7 @@ docker run -p 8000:8000 skywash
 The image is built with a demo WAQI token
 `d637fde34e7053b3d3110c41de9b9ed82fa9e65e`. Override it at build or run time with `--build-arg WAQI_API_TOKEN=<your_token>` or `-e WAQI_API_TOKEN=<your_token>` respectively if you have your own token.
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -135,12 +135,11 @@ The image is built with a demo WAQI token
 4. Test with real API data
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is for educational and non-commercial use. Real-time data provided by WAQI must include proper attribution as per their terms of service.
 
-## 🙏 Credits
+## Credits
 
 - **Data**: World Air Quality Index Project and global EPA agencies
-- **Design**: Inspired by NASA Worldview and Observable
 - **Libraries**: FastAPI, React, Chart.js, Leaflet, Bootstrap

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: skywash
+spec:
+  replicas: 3
+  selector:
+    matchLabels: app: skywash
+  template:
+    metadata:
+      labels: { app: skywash }
+    spec:
+      containers:
+        - name: web
+          image: harbor.cirrus.ucar.edu/<PROJECT>/skywash:latest
+          ports: [{ containerPort: 8000 }]
+          env:
+            - name: WASHOUT_COEFF   # example secret made dynamic
+              valueFrom:
+                secretKeyRef:
+                  name: skywash-secrets
+                  key: washout_coeff
+          resources:
+            limits: { cpu: "500m", memory: "512Mi" }

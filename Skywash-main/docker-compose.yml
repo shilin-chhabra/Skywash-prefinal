@@ -1,0 +1,31 @@
+# docker-compose.yml
+services:
+  skywash:
+    # --- build the image (Dockerfile is in the repo root) --------------------
+    build:
+      context: .
+      args:
+        # build-time WAQI token baked into the image
+        WAQI_API_TOKEN: d637fde34e7053b3d3110c41de9b9ed82fa9e65e
+
+    # --- container runtime settings -----------------------------------------
+    ports:
+      - "8000:8000"                         # host:container
+
+    environment:
+      # run-time token (can override what was baked in)
+      WAQI_API_TOKEN: d637fde34e7053b3d3110c41de9b9ed82fa9e65e
+
+    restart: unless-stopped                # autorestart on failure (optional)
+
+    # --- health-check (Python one-liner, no curl required) -------------------
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request,sys; sys.exit(0) if urllib.request.urlopen('http://localhost:8000/api/cities').getcode()==200 else sys.exit(1)"
+        ]
+      interval: 30s
+      retries: 3

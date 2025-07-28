@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      /* Strict but sensible React/TS settings */
+      "target": "ES2021",
+      "lib": ["DOM", "DOM.Iterable", "ES2021"],
+      "jsx": "react-jsx",
+      "moduleResolution": "node",
+      "module": "ESNext",
+      "skipLibCheck": true,
+      "strict": true,
+      "allowSyntheticDefaultImports": true,
+      "esModuleInterop": true
+    },
+    "include": ["src"]
+  }
+  

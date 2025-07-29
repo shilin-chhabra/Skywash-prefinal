@@ -7,3 +7,7 @@ app:
     image: hub.k8s.ucar.edu/skywash/skywash:29ea865518a77c5d80c2ef64713af8155bc3e54b
     port: 8000
   name: skywash
+  secret: 
+    secretPath: ncote@ucar.edu/skywash
+    secretKey: WAQI_API_TOKEN
+

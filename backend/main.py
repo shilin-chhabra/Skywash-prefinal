@@ -277,7 +277,13 @@ def washout(
         raise HTTPException(status_code=400, detail=f"Invalid parameter values: {str(e)}")
     
     try:
-        k = float(os.getenv("WASHOUT_COEFF", "0.08"))
+        try:
+            k = float(os.getenv("WASHOUT_COEFF", "0.08"))
+        except ValueError:
+            # If the environment variable is set but not a valid float (e.g. a token string),
+            # fall back to the default coefficient and log a warning.
+            print("[washout] Invalid WASHOUT_COEFF value – falling back to 0.08")
+            k = 0.08
         rainfall = rain_value * duration_value
         final = pm25_value * math.exp(-k * rainfall)
         

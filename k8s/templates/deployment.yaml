@@ -19,8 +19,8 @@ spec:
           ports: 
             - containerPort: {{ .Values.app.container.port }}
           env:
-            - name: WASHOUT_COEFF   # example secret made dynamic
-              value: "d637fde34e7053b3d3110c41de9b9ed82fa9e65e"
+            - name: WASHOUT_COEFF   # washout coefficient (default 0.08)
+              value: "0.08"
           resources:
             limits:
               cpu: {{ .Values.app.cpu }}

@@ -4,6 +4,6 @@ app:
   memory: 2Gi
   cpu: 1
   container:
-    image: hub.k8s.ucar.edu/skywash/skywash@sha256:29ea865518a77c5d80c2ef64713af8155bc3e54b
+    image: hub.k8s.ucar.edu/skywash/skywash:29ea865518a77c5d80c2ef64713af8155bc3e54b
     port: 8000
   name: skywash

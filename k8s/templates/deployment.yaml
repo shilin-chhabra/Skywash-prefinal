@@ -20,7 +20,7 @@ spec:
             - containerPort: {{ .Values.app.container.port }}
           env:
             - name: WASHOUT_COEFF   # washout coefficient (default 0.08)
-              value: "0.08"
+              value: 0.08
           resources:
             limits:
               cpu: {{ .Values.app.cpu }}

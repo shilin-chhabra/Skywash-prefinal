@@ -151,16 +151,28 @@ async def fetch_real_time_pm25(city_name: str) -> Optional[float]:
                         # Extract PM2.5 from WAQI response
                         pm25_data = data["data"].get("iaqi", {}).get("pm25", {})
                         if pm25_data and "v" in pm25_data:
-                            pm25_value = float(pm25_data["v"])
-                            
-                            # Cache the result
-                            cache[cache_key] = {
-                                "pm25": pm25_value,
-                                "timestamp": current_time.isoformat(),
-                                "source": "waqi_api"
-                            }
-                            
-                            return pm25_value
+                            try:
+                                # Ensure the value is numeric and valid
+                                pm25_raw = pm25_data["v"]
+                                pm25_value = float(pm25_raw)
+                                
+                                # Additional validation - PM2.5 should be a reasonable positive number
+                                if pm25_value < 0 or pm25_value > 1000:
+                                    print(f"Invalid PM2.5 value for {city_name}: {pm25_value}")
+                                    return None
+                                
+                                # Cache the result
+                                cache[cache_key] = {
+                                    "pm25": pm25_value,
+                                    "timestamp": current_time.isoformat(),
+                                    "source": "waqi_api"
+                                }
+                                
+                                return pm25_value
+                                
+                            except (ValueError, TypeError) as e:
+                                print(f"Error converting PM2.5 value to float for {city_name}: {pm25_data['v']} - {e}")
+                                return None
                             
     except Exception as e:
         print(f"Error fetching real-time data for {city_name}: {e}")
@@ -246,24 +258,34 @@ def washout(
     rain_mm: float = Query(..., gt=0, description="Rainfall intensity in mm/h"),
     duration_h: float = Query(..., gt=0, description="Duration in hours"),
 ):
-    # Additional validation
-    if pm25 <= 0:
-        raise HTTPException(status_code=400, detail="PM2.5 concentration must be greater than 0")
-    if rain_mm <= 0:
-        raise HTTPException(status_code=400, detail="Rainfall intensity must be greater than 0")
-    if duration_h <= 0:
-        raise HTTPException(status_code=400, detail="Duration must be greater than 0")
+    # Additional validation to ensure parameters are valid numbers
+    try:
+        # Ensure pm25 is a valid number and not a string/hash
+        pm25_value = float(pm25)
+        rain_value = float(rain_mm)
+        duration_value = float(duration_h)
+        
+        # Range validation
+        if pm25_value <= 0 or pm25_value > 1000:
+            raise HTTPException(status_code=400, detail="PM2.5 concentration must be between 0 and 1000 µg/m³")
+        if rain_value <= 0 or rain_value > 1000:
+            raise HTTPException(status_code=400, detail="Rainfall intensity must be between 0 and 1000 mm/h")
+        if duration_value <= 0 or duration_value > 168:  # 1 week max
+            raise HTTPException(status_code=400, detail="Duration must be between 0 and 168 hours")
+            
+    except (ValueError, TypeError) as e:
+        raise HTTPException(status_code=400, detail=f"Invalid parameter values: {str(e)}")
     
     try:
         k = float(os.getenv("WASHOUT_COEFF", "0.08"))
-        rainfall = rain_mm * duration_h
-        final = pm25 * math.exp(-k * rainfall)
+        rainfall = rain_value * duration_value
+        final = pm25_value * math.exp(-k * rainfall)
         
         # Ensure final value is not negative
         final = max(0, final)
         
         return {
-            "initial": pm25, 
+            "initial": pm25_value, 
             "rainfall_mm": rainfall, 
             "final": round(final, 1),
             "washout_coefficient": k

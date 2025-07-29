@@ -52,10 +52,17 @@ export default function WashoutSimulator({ cities, setCities, setSimulationData 
       return;
     }
 
+    // Validate PM2.5 value from selected city
+    const pm25Value = typeof selCity.pm25 === 'number' ? selCity.pm25 : parseFloat(String(selCity.pm25));
+    if (isNaN(pm25Value) || pm25Value <= 0) {
+      setError("Invalid PM2.5 data for selected city. Please try refreshing the data or select a different city.");
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      const url = `/api/washout?pm25=${selCity.pm25}&rain_mm=${rainValue}&duration_h=${durValue}`;
+      const url = `/api/washout?pm25=${pm25Value}&rain_mm=${rainValue}&duration_h=${durValue}`;
       const res = await fetch(url);
       
       if (!res.ok) {
@@ -78,7 +85,7 @@ export default function WashoutSimulator({ cities, setCities, setSimulationData 
       // Update simulation data for chart
       setSimulationData({
         cityName: selCity.city,
-        original: selCity.pm25,
+        original: pm25Value, // Use the validated pm25 value
         simulated: json.final
       });
     } catch (err) {
@@ -115,11 +122,27 @@ export default function WashoutSimulator({ cities, setCities, setSimulationData 
     setSimulationData(null);
   };
 
+  // Helper function to get safe PM2.5 value
+  const getSafePm25 = (city: City | null, useOriginal: boolean = false): number => {
+    if (!city) return 0;
+    
+    let pm25Source: number;
+    if (useOriginal && originalCities[cityIdx]) {
+      pm25Source = originalCities[cityIdx].pm25;
+    } else {
+      pm25Source = city.pm25;
+    }
+    
+    const pm25Value = typeof pm25Source === 'number' ? pm25Source : parseFloat(String(pm25Source));
+    return isNaN(pm25Value) ? 0 : pm25Value;
+  };
+
   // Check if inputs are valid for button enabling
   const isInputValid = () => {
     const rainValue = parseFloat(rain);
     const durValue = parseFloat(dur);
-    return !isNaN(rainValue) && rainValue > 0 && !isNaN(durValue) && durValue > 0 && cityIdx >= 0;
+    const pm25Value = getSafePm25(selCity);
+    return !isNaN(rainValue) && rainValue > 0 && !isNaN(durValue) && durValue > 0 && cityIdx >= 0 && pm25Value > 0;
   };
 
   // Check if cities have been modified from original
@@ -297,7 +320,7 @@ export default function WashoutSimulator({ cities, setCities, setSimulationData 
                   {/* Details */}
                   <div className="mb-4 text-start" style={{maxWidth: '400px', margin: '0 auto'}}>
                     <p className="mb-1"><strong>City:</strong> {selCity?.city || 'N/A'}</p>
-                    <p className="mb-1"><strong>Current PM₂.₅:</strong> {selCity ? (originalCities[cityIdx]?.pm25 ?? selCity.pm25).toFixed(1) : 'N/A'} µg/m³</p>
+                    <p className="mb-1"><strong>Current PM₂.₅:</strong> {getSafePm25(selCity, true).toFixed(1)} µg/m³</p>
                     <p className="mb-1"><strong>Rainfall Intensity:</strong> {rain || 'N/A'} mm h⁻¹</p>
                     <p className="mb-3"><strong>Duration:</strong> {dur || 'N/A'} h</p>
                   </div>
@@ -309,13 +332,13 @@ export default function WashoutSimulator({ cities, setCities, setSimulationData 
                       <div
                         className="d-inline-block rounded-pill fw-bold shadow-lg mb-2"
                         style={{
-                          background: selCity ? colourForPm25((originalCities[cityIdx]?.pm25 ?? selCity.pm25)) : '#e5e7eb',
-                          color: selCity && (originalCities[cityIdx]?.pm25 ?? selCity.pm25) >= 151 ? '#ffffff' : '#000000',
+                          background: colourForPm25(getSafePm25(selCity, true)),
+                          color: getSafePm25(selCity, true) >= 151 ? '#ffffff' : '#000000',
                           fontSize: '2rem',
                           padding: '16px 20px'
                         }}
                       >
-                        {selCity ? (originalCities[cityIdx]?.pm25 ?? selCity.pm25).toFixed(1) : '0.0'} µg/m³
+                        {getSafePm25(selCity, true).toFixed(1)} µg/m³
                       </div>
                       <p className="text-muted fw-medium mb-0 small">
                         Current PM₂.₅ level

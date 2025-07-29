@@ -21,6 +21,11 @@ spec:
           env:
             - name: WASHOUT_COEFF   # washout coefficient (default 0.08)
               value: "0.08"
+            - name: WAQI_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app.name }}-esos
+                  key: {{ .Values.app.secret.secretKey }}
           resources:
             limits:
               cpu: {{ .Values.app.cpu }}
